@@ -1,0 +1,102 @@
+<div class="container-fluid mt-4">
+    <h2>Habitaciones</h2>
+    <div class="d-flex justify-content-between mb-3">
+        <button (click)="toggleForm()" class="btn btn-success">
+            <i class="fa fa-plus"></i> Registrar Habitación
+        </button>
+    </div>
+
+    <table class="table table-striped table-hover table-dark">
+        <thead class="table-dark">
+            <tr style="text-align: center;">
+                <th scope="col">#</th>
+                <th scope="col">Número</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Estado</th>
+                <th scope="col" *ngIf="showActions">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="text-align: center;" *ngFor="let habitacion of listaHabitaciones; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td class="fw-semibold">{{ habitacion.numero }}</td>
+                <td>{{ habitacion.tipo }}</td>
+                <td>${{ habitacion.precio | number:'1.2-2' }}</td>
+                <td>
+                    <span class="badge" [ngClass]="habitacion.estado === 'DISPONIBLE' ? 'bg-success' : 'bg-danger'">
+                        {{ habitacion.estado }}
+                    </span>
+                </td>
+                <td *ngIf="showActions">
+                    <button class="btn btn-primary btn-sm me-1" (click)="editHabitacion(habitacion)">
+                        Editar
+                    </button>
+                    <button class="btn btn-danger btn-sm" (click)="deleteHabitacion(habitacion.id)">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <tr *ngIf="listaHabitaciones.length === 0">
+        <td [attr.colspan]="showActions ? 6 : 5" class="text-center py-5 text-muted">
+            No hay habitaciones registradas.
+        </td>
+    </tr>
+
+    <!-- Modal -->
+    <div class="modal fade" #habitacionModalRef tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">{{ modalText }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="habitacionForm" (ngSubmit)="onSubmit()">
+                        <div class="mb-3">
+                            <label for="numero" class="form-label">Número de Habitación</label>
+                            <input id="numero" type="text" class="form-control" formControlName="numero"
+                                maxlength="10" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Habitación</label>
+                            <select id="tipo" formControlName="tipo" class="form-select">
+                                <option value="" disabled selected>Seleccione el tipo de habitación</option>
+                                <option *ngFor="let tipo of listaTipoHabitacion" [value]="tipo.value">
+                                    {{ tipo.label }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="precio" class="form-label">Precio por Noche</label>
+                            <input id="precio" type="number" class="form-control" formControlName="precio" step="0.01"
+                                min="0" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select id="estado" formControlName="estado" class="form-select">
+                                <option value="" disabled selected>Seleccione el estado</option>
+                                <option value="DISPONIBLE">Disponible</option>
+                                <option value="OCUPADA">Ocupada</option>
+                                <option value="MANTENIMIENTO">Mantenimiento</option>
+                            </select>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success px-4" [disabled]="habitacionForm.invalid">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

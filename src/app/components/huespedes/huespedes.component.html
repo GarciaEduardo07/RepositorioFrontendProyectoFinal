@@ -1,0 +1,115 @@
+<div class="container-fluid mt-4">
+    <h2>Huespedes</h2>
+    <div class="d-flex justify-content-between mb-3">
+        <button (click)="toggleForm()" class="btn btn-success"><i class="fa fa-plus"></i>
+            Registrar Huesped
+        </button>
+    </div>
+    <table class="table table-striped table-hover table-dark">
+        <thead class="table-dark">
+            <tr style="text-align: center;">
+                <th scope="col">#</th>
+                <th scope="col">Nombre Completo</th>
+                <th scope="col">Email</th>
+                <th scope="col">Teléfono</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Nacionalidad</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="text-align: center;" *ngFor="let huesped of listaHuespedes; let i = index">
+                <td>{{ i + 1 }} </td>
+                <td class="fw-semibold">
+                    {{ huesped.nombre }}
+                    {{ huesped.apellidoPaterno }}
+                    {{ huesped.apellidoMaterno }}
+                </td>
+                <td>{{ huesped.email }} </td>
+                <td>{{ huesped.telefono }} </td>
+                <td>
+                    <span class="badge bg-secondary">
+                        {{ huesped.documento }}
+                    </span>
+                </td>
+                <td>{{ huesped.nacionalidad }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm me-1 ms-1" (click)="editHuesped(huesped)">
+                        Editar
+                    </button>
+                    <button class="btn btn-danger btn-sm ms-1" (click)="deleteHuesped(huesped.id)">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <tr *ngIf="listaHuespedes.length === 0">
+        <td colspan="7" class="text-center py-5 text-muted">
+            No hay huéspedes registrados.
+        </td>
+    </tr>
+
+    <div class="modal fade" #huespedModalRef tabindex="-1" aria-labelledby="huespedModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="huedpedModalLabel">{{ modalText }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="huespedForm" (ngSubmit)="onSubmit()">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input id="nombre" class="form-control" formControlName="nombre" maxlength="30" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellidoPaterno" class="form-label">Apellido Paterno</label>
+                            <input id="apellidoPaterno" class="form-control" formControlName="apellidoPaterno"
+                                maxlength="50" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellidoMaterno" class="form-label">Apellido Materno</label>
+                            <input id="apellidoMaterno" class="form-control" formControlName="apellidoMaterno"
+                                maxlength="50" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input id="email" class="form-control" formControlName="email" maxlength="50" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Telefono</label>
+                            <input id="telefono" class="form-control" formControlName="telefono" maxlength="10" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="documento" class="form-label">Documento</label>
+                            <input id="documento" class="form-control" formControlName="documento" maxlength="10" />
+                            <!-- <select id="documento" class="form-select" formControlName="documento">
+                                <option [ngValue]="null" disabled selected> seleccione el tipo de documento </option>
+                                <option *ngFor="let documento of listaDocumentos" [value]="documento">
+                                    {{ documento }}
+                                </option>
+                            </select> -->
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nacionalidad</label>
+                            <select formControlName="nacionalidad" class="form-select">
+                                <option value="" disabled selected>Seleccione nacionalidad</option>
+                                <option *ngFor="let n of listaNacionalidades" [value]="n.value">
+                                    {{ n.label }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success px-4" [disabled]="huespedForm.invalid">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
