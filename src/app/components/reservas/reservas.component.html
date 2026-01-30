@@ -23,8 +23,8 @@
         <tbody>
             <tr style="text-align: center;" *ngFor="let reserva of listaReservas; let i = index">
                 <td>{{ i + 1 }}</td>
-                <td>{{ reserva.huesped?.nombre }} {{ reserva.huesped?.apellidoPaterno }}</td>
-                <td>{{ reserva.habitacion?.numero }} ({{ reserva.habitacion?.tipo }})</td>
+                <td>{{ reserva.huesped.nombre }} {{ reserva.huesped.apellidoPaterno }}</td>
+                <td>{{ reserva.habitacion.numero }} ({{ reserva.habitacion.tipo }})</td>
                 <td>{{ reserva.fechaEntrada }}</td>
                 <td>{{ reserva.fechaSalida }}</td>
                 <td>{{ reserva.cantNoches }}</td>
