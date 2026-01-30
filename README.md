@@ -9,13 +9,13 @@ Este proyecto es una aplicación web frontend desarrollada en **Angular** para l
 - **Control de Acceso (RBAC)**:  Funcionalidades diferenciadas para administradores (`ADMIN`) y recepcionistas/usuarios (`USER`).
 - **Protección de Rutas**: Guardias de navegación para proteger secciones sensibles.
 
-### busts_in_silhouette: Gestión de Huéspedes
+### Gestión de Huéspedes
 - Registro completo de información personal (Nombre, Documento, Nacionalidad, Contacto).
 - **Validaciones Avanzadas**: Normalización de nacionalidades y prevención de duplicados.
 - Edición y eliminación de registros.
 - **Flujo Optimizado**: Opción rápida para crear una reserva inmediatamente después de registrar un huésped.
 
-### bed: Gestión de Habitaciones
+### Gestión de Habitaciones
 - Catálogo completo de habitaciones con detalles como:
   - **Tipo**: Sencilla, Doble, Suite, King.
   - **Estado**: Disponible, Ocupada, Limpieza, Mantenimiento.
