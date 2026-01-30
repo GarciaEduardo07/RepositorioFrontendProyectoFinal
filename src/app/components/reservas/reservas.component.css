@@ -1,0 +1,4 @@
+/* Standard spacing and alignment if needed, defaulting to Bootstrap classes */
+.table th, .table td {
+    vertical-align: middle;
+}
