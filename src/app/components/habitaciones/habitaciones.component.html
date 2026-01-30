@@ -34,7 +34,8 @@
                     <button class="btn btn-primary btn-sm me-1" (click)="editHabitacion(habitacion)">
                         Editar
                     </button>
-                    <button class="btn btn-danger btn-sm" (click)="deleteHabitacion(habitacion.id)">
+                    <button *ngIf="habitacion.estado === 'DISPONIBLE'" class="btn btn-danger btn-sm"
+                        (click)="deleteHabitacion(habitacion.id)">
                         Eliminar
                     </button>
                 </td>
@@ -67,8 +68,8 @@
                         <div class="mb-3">
                             <label for="idTipo" class="form-label">Tipo de Habitación</label>
                             <select id="idTipo" formControlName="idTipo" class="form-select">
-                                <option value="" disabled selected>Seleccione el tipo</option>
-                                <option *ngFor="let tipo of listaTipoHabitacion" [value]="tipo.id">
+                                <option [ngValue]="null" disabled selected>Seleccione el tipo</option>
+                                <option *ngFor="let tipo of listaTipoHabitacion" [ngValue]="tipo.id">
                                     {{ tipo.label }}
                                 </option>
                             </select>
@@ -89,8 +90,8 @@
                         <div class="mb-3">
                             <label for="idEstado" class="form-label">Estado</label>
                             <select id="idEstado" formControlName="idEstado" class="form-select">
-                                <option value="" disabled selected>Seleccione el estado</option>
-                                <option *ngFor="let estado of listaEstadoHabitacion" [value]="estado.id">
+                                <option [ngValue]="null" disabled selected>Seleccione el estado</option>
+                                <option *ngFor="let estado of listaEstadoHabitacion" [ngValue]="estado.id">
                                     {{ estado.label }}
                                 </option>
                             </select>

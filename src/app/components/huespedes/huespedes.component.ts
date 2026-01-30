@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { Roles } from '../../constants/Roles';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 declare var bootstrap: any;
@@ -37,7 +38,7 @@ export class HuespedesComponent implements OnInit, AfterViewInit {
 
   private modalInstance!: any;
 
-  constructor(private fb: FormBuilder, private huespedesService: HuespedesService, private authService: AuthService, private cdr: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private huespedesService: HuespedesService, private authService: AuthService, private cdr: ChangeDetectorRef, private router: Router) {
     this.huespedForm = this.fb.group({
       id: [null],
       nombre: ['', [Validators.required, Validators.maxLength(50), Validators.pattern(/^(?!\s*$).+/)]],
@@ -54,7 +55,7 @@ export class HuespedesComponent implements OnInit, AfterViewInit {
         ]
       ],
       documento: ['', [Validators.required]],
-      nacionalidad: ['', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')]]
+      nacionalidad: ['', [Validators.required]]
     });
   }
 
@@ -114,8 +115,31 @@ export class HuespedesComponent implements OnInit, AfterViewInit {
     this.selectedHuesped = huesped;
     this.modalText = 'Editando Huesped: ' + huesped.nombre;
 
-    this.huespedForm.patchValue({ ...huesped });
+    // Normalize nationalidad to match dropdown values
+    const normalizedNacionalidad = this.findNacionalidadValue(huesped.nacionalidad);
+
+    this.huespedForm.patchValue({
+      ...huesped,
+      nacionalidad: normalizedNacionalidad || huesped.nacionalidad
+    });
     this.modalInstance.show();
+  }
+
+  private findNacionalidadValue(incoming: string): string | undefined {
+    if (!incoming) return undefined;
+    // 1. Try exact match
+    const exact = this.listaNacionalidades.find(n => n.value === incoming);
+    if (exact) return exact.value;
+
+    // 2. Try match ignoring case or underscores vs spaces
+    // e.g. "ESTADOS_UNIDOS" vs "ESTADOS UNIDOS" or "Estados Unidos"
+    const normalizedIncoming = incoming.toUpperCase().replace(/\s+/g, '_');
+
+    const match = this.listaNacionalidades.find(n =>
+      n.value === normalizedIncoming ||
+      n.label.toUpperCase() === incoming.toUpperCase());
+
+    return match ? match.value : undefined;
   }
 
   resetForm(): void {
@@ -140,8 +164,8 @@ export class HuespedesComponent implements OnInit, AfterViewInit {
             this.modalInstance.hide();
             Swal.fire('Actualizado', 'Huésped actualizado correctamente', 'success');
           },
-          error: () => {
-            Swal.fire('Error', 'No se pudo actualizar el huésped', 'error');
+          error: (err) => {
+            Swal.fire('Error', err.error?.mensaje || 'No se pudo actualizar el huésped', 'error');
           }
         });
 
@@ -152,7 +176,19 @@ export class HuespedesComponent implements OnInit, AfterViewInit {
           next: (resp) => {
             this.listaHuespedes.push(resp);
             this.modalInstance.hide();
-            Swal.fire('Registrado', 'Huésped registrado correctamente', 'success');
+
+            Swal.fire({
+              title: 'Registrado',
+              text: 'Huésped registrado correctamente. ¿Desea crear una reserva para este huésped?',
+              icon: 'success',
+              showCancelButton: true,
+              confirmButtonText: 'Sí, crear reserva',
+              cancelButtonText: 'No, finalizar'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.router.navigate(['/dashboard/reservas'], { queryParams: { idHuesped: resp.id } });
+              }
+            });
           },
           error: (err) => {
             console.error(err);

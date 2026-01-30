@@ -163,7 +163,7 @@ export class HabitacionesComponent implements OnInit, AfterViewInit {
           },
           error: (err) => {
             console.error(err);
-            Swal.fire('Error', 'No se pudo actualizar la habitación', 'error');
+            Swal.fire('Error', err.error?.mensaje || 'No se pudo actualizar la habitación', 'error');
           }
         });
     } else {

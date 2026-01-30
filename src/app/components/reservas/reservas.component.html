@@ -60,8 +60,9 @@
 
                     <!-- Delete: Admin only. Disabled if EN_CURSO per instructions -->
                     <!-- Delete: Admin only. Disabled if EN_CURSO or FINALIZADA -->
-                    <button *ngIf="isAdmin && reserva.estado !== 'EN_CURSO' && reserva.estado !== 'FINALIZADA'"
-                        class="btn btn-danger btn-sm" (click)="eliminar(reserva.id)">
+                    <!-- Delete: Admin only. Only if CONFIRMADA -->
+                    <button *ngIf="isAdmin && reserva.estado === 'CONFIRMADA'" class="btn btn-danger btn-sm"
+                        (click)="eliminar(reserva.id)">
                         Eliminar
                     </button>
                 </td>
@@ -88,31 +89,49 @@
                         <div class="mb-3">
                             <label for="idHuesped" class="form-label">Huésped</label>
                             <select id="idHuesped" formControlName="idHuesped" class="form-select">
-                                <option value="" disabled selected>Seleccione un Huésped</option>
-                                <option *ngFor="let h of listaHuespedes" [value]="h.id">
+                                <option [ngValue]="null" disabled selected>Seleccione un Huésped</option>
+                                <option *ngFor="let h of listaHuespedes" [ngValue]="h.id">
                                     {{ h.nombre }} {{ h.apellidoPaterno }} ({{ h.documento }})
                                 </option>
                             </select>
+                            <div *ngIf="reservaForm.get('idHuesped')?.invalid && reservaForm.get('idHuesped')?.touched"
+                                class="text-danger small">
+                                Seleccione un huésped.
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="idHabitacion" class="form-label">Habitación</label>
                             <select id="idHabitacion" formControlName="idHabitacion" class="form-select">
-                                <option value="" disabled selected>Seleccione una Habitación</option>
-                                <option *ngFor="let h of listaHabitaciones" [value]="h.id">
+                                <option [ngValue]="null" disabled selected>Seleccione una Habitación</option>
+                                <option *ngFor="let h of listaHabitaciones" [ngValue]="h.id">
                                     {{ h.numero }} - {{ h.tipo }} (${{ h.precioNoche }})
                                 </option>
                             </select>
+                            <div *ngIf="reservaForm.get('idHabitacion')?.invalid && reservaForm.get('idHabitacion')?.touched"
+                                class="text-danger small">
+                                Seleccione una habitación.
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="fechaEntrada" class="form-label">Fecha Entrada</label>
-                            <input id="fechaEntrada" type="date" class="form-control" formControlName="fechaEntrada" />
+                            <input id="fechaEntrada" type="date" class="form-control" formControlName="fechaEntrada"
+                                [min]="todayDate" />
+                            <div *ngIf="reservaForm.get('fechaEntrada')?.invalid && reservaForm.get('fechaEntrada')?.touched"
+                                class="text-danger small">
+                                Fecha inválida (Mínimo: {{todayDate}}).
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="fechaSalida" class="form-label">Fecha Salida</label>
-                            <input id="fechaSalida" type="date" class="form-control" formControlName="fechaSalida" />
+                            <input id="fechaSalida" type="date" class="form-control" formControlName="fechaSalida"
+                                [min]="minFechaSalida" />
+                            <div *ngIf="reservaForm.get('fechaSalida')?.invalid && reservaForm.get('fechaSalida')?.touched"
+                                class="text-danger small">
+                                Fecha inválida (Mínimo: {{minFechaSalida}}).
+                            </div>
                         </div>
 
                         <div class="text-center">
