@@ -164,6 +164,28 @@ export class ReservasComponent implements OnInit, AfterViewInit {
     }
 
     checkIn(id: number): void {
+        const reserva = this.listaReservas.find(r => r.id === id);
+        if (!reserva) return;
+
+        if (reserva.fechaEntrada < this.todayDate) {
+            Swal.fire({
+                title: '¿Check-in Tardío?',
+                text: `La fecha de entrada (${reserva.fechaEntrada}) ya ha pasado. ¿Desea continuar?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, continuar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.executeCheckIn(id);
+                }
+            });
+        } else {
+            this.executeCheckIn(id);
+        }
+    }
+
+    private executeCheckIn(id: number): void {
         this.reservasService.checkIn(id).subscribe({
             next: (resp) => {
                 this.actualizarReservaEnLista(resp);
@@ -174,6 +196,28 @@ export class ReservasComponent implements OnInit, AfterViewInit {
     }
 
     checkOut(id: number): void {
+        const reserva = this.listaReservas.find(r => r.id === id);
+        if (!reserva) return;
+
+        if (this.todayDate > reserva.fechaSalida) {
+            Swal.fire({
+                title: '¿Check-out Retrasado?',
+                text: `La fecha de salida (${reserva.fechaSalida}) ya pasó. ¿Desea finalizar la estancia?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, check-out',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.executeCheckOut(id);
+                }
+            });
+        } else {
+            this.executeCheckOut(id);
+        }
+    }
+
+    private executeCheckOut(id: number): void {
         this.reservasService.checkOut(id).subscribe({
             next: (resp) => {
                 this.actualizarReservaEnLista(resp);
