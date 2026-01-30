@@ -13,6 +13,7 @@
                 <th scope="col">Número</th>
                 <th scope="col">Tipo</th>
                 <th scope="col">Precio</th>
+                <th scope="col">Capacidad</th>
                 <th scope="col">Estado</th>
                 <th scope="col" *ngIf="showActions">Acciones</th>
             </tr>
@@ -22,7 +23,8 @@
                 <td>{{ i + 1 }}</td>
                 <td class="fw-semibold">{{ habitacion.numero }}</td>
                 <td>{{ habitacion.tipo }}</td>
-                <td>${{ habitacion.precio | number:'1.2-2' }}</td>
+                <td>${{ habitacion.precioNoche | number:'1.2-2' }}</td>
+                <td>{{ habitacion.capacidad }}</td>
                 <td>
                     <span class="badge" [ngClass]="habitacion.estado === 'DISPONIBLE' ? 'bg-success' : 'bg-danger'">
                         {{ habitacion.estado }}
@@ -40,11 +42,10 @@
         </tbody>
     </table>
 
-    <tr *ngIf="listaHabitaciones.length === 0">
-        <td [attr.colspan]="showActions ? 6 : 5" class="text-center py-5 text-muted">
-            No hay habitaciones registradas.
-        </td>
-    </tr>
+    <div *ngIf="listaHabitaciones.length === 0" class="text-center py-5 text-muted">
+        <span *ngIf="showActions; else noData">No hay habitaciones registradas.</span>
+        <ng-template #noData>No hay habitaciones disponibles.</ng-template>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" #habitacionModalRef tabindex="-1" aria-hidden="true">
@@ -64,28 +65,34 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="tipo" class="form-label">Tipo de Habitación</label>
-                            <select id="tipo" formControlName="tipo" class="form-select">
-                                <option value="" disabled selected>Seleccione el tipo de habitación</option>
-                                <option *ngFor="let tipo of listaTipoHabitacion" [value]="tipo.value">
+                            <label for="idTipo" class="form-label">Tipo de Habitación</label>
+                            <select id="idTipo" formControlName="idTipo" class="form-select">
+                                <option value="" disabled selected>Seleccione el tipo</option>
+                                <option *ngFor="let tipo of listaTipoHabitacion" [value]="tipo.id">
                                     {{ tipo.label }}
                                 </option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="precio" class="form-label">Precio por Noche</label>
-                            <input id="precio" type="number" class="form-control" formControlName="precio" step="0.01"
-                                min="0" />
+                            <label for="precioNoche" class="form-label">Precio por Noche</label>
+                            <input id="precioNoche" type="number" class="form-control" formControlName="precioNoche"
+                                step="0.01" min="0" />
                         </div>
 
                         <div class="mb-3">
-                            <label for="estado" class="form-label">Estado</label>
-                            <select id="estado" formControlName="estado" class="form-select">
+                            <label for="capacidad" class="form-label">Capacidad (Personas)</label>
+                            <input id="capacidad" type="number" class="form-control" formControlName="capacidad"
+                                min="1" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="idEstado" class="form-label">Estado</label>
+                            <select id="idEstado" formControlName="idEstado" class="form-select">
                                 <option value="" disabled selected>Seleccione el estado</option>
-                                <option value="DISPONIBLE">Disponible</option>
-                                <option value="OCUPADA">Ocupada</option>
-                                <option value="MANTENIMIENTO">Mantenimiento</option>
+                                <option *ngFor="let estado of listaEstadoHabitacion" [value]="estado.id">
+                                    {{ estado.label }}
+                                </option>
                             </select>
                         </div>
 

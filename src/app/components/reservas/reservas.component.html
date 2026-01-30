@@ -59,8 +59,9 @@
                     </button>
 
                     <!-- Delete: Admin only. Disabled if EN_CURSO per instructions -->
-                    <button *ngIf="isAdmin && reserva.estado !== 'EN_CURSO'" class="btn btn-danger btn-sm"
-                        (click)="eliminar(reserva.id)">
+                    <!-- Delete: Admin only. Disabled if EN_CURSO or FINALIZADA -->
+                    <button *ngIf="isAdmin && reserva.estado !== 'EN_CURSO' && reserva.estado !== 'FINALIZADA'"
+                        class="btn btn-danger btn-sm" (click)="eliminar(reserva.id)">
                         Eliminar
                     </button>
                 </td>
@@ -99,7 +100,7 @@
                             <select id="idHabitacion" formControlName="idHabitacion" class="form-select">
                                 <option value="" disabled selected>Seleccione una Habitación</option>
                                 <option *ngFor="let h of listaHabitaciones" [value]="h.id">
-                                    {{ h.numero }} - {{ h.tipo }} (${{ h.precio }})
+                                    {{ h.numero }} - {{ h.tipo }} (${{ h.precioNoche }})
                                 </option>
                             </select>
                         </div>

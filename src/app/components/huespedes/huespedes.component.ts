@@ -54,30 +54,30 @@ export class HuespedesComponent implements OnInit, AfterViewInit {
         ]
       ],
       documento: ['', [Validators.required]],
-      nacionalidad: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')]]
+      nacionalidad: ['', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')]]
     });
   }
 
   listaNacionalidades = [
-  { value: 'MEXICO', label: 'México' },
-  { value: 'ESTADOS_UNIDOS', label: 'Estados Unidos' },
-  { value: 'CANADA', label: 'Canadá' },
-  { value: 'ARGENTINA', label: 'Argentina' },
-  { value: 'BRASIL', label: 'Brasil' },
-  { value: 'COLOMBIA', label: 'Colombia' },
-  { value: 'CHILE', label: 'Chile' },
-  { value: 'PERU', label: 'Perú' },
-  { value: 'ESPAÑA', label: 'España' },
-  { value: 'FRANCIA', label: 'Francia' },
-  { value: 'ALEMANIA', label: 'Alemania' },
-  { value: 'ITALIA', label: 'Italia' },
-  { value: 'REINO_UNIDO', label: 'Reino Unido' },
-  { value: 'JAPON', label: 'Japón' },
-  { value: 'CHINA', label: 'China' },
-  { value: 'COREA_DEL_SUR', label: 'Corea del Sur' },
-  { value: 'AUSTRALIA', label: 'Australia' },
-  { value: 'OTRA', label: 'Otro' }
-];
+    { value: 'MEXICO', label: 'México' },
+    { value: 'ESTADOS_UNIDOS', label: 'Estados Unidos' },
+    { value: 'CANADA', label: 'Canadá' },
+    { value: 'ARGENTINA', label: 'Argentina' },
+    { value: 'BRASIL', label: 'Brasil' },
+    { value: 'COLOMBIA', label: 'Colombia' },
+    { value: 'CHILE', label: 'Chile' },
+    { value: 'PERU', label: 'Perú' },
+    { value: 'ESPAÑA', label: 'España' },
+    { value: 'FRANCIA', label: 'Francia' },
+    { value: 'ALEMANIA', label: 'Alemania' },
+    { value: 'ITALIA', label: 'Italia' },
+    { value: 'REINO_UNIDO', label: 'Reino Unido' },
+    { value: 'JAPON', label: 'Japón' },
+    { value: 'CHINA', label: 'China' },
+    { value: 'COREA_DEL_SUR', label: 'Corea del Sur' },
+    { value: 'AUSTRALIA', label: 'Australia' },
+    { value: 'OTRA', label: 'Otro' }
+  ];
 
   ngOnInit(): void {
     this.listarHuespedes();
@@ -125,42 +125,42 @@ export class HuespedesComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
-  if (this.huespedForm.invalid) return;
+    if (this.huespedForm.invalid) return;
 
-  const huespedData: HuespedRequest = this.huespedForm.value;
+    const huespedData: HuespedRequest = this.huespedForm.value;
 
-  if (this.isEditMode && this.selectedHuesped) {
+    if (this.isEditMode && this.selectedHuesped) {
 
-    this.huespedesService.putHuesped(huespedData, this.selectedHuesped.id)
-      .subscribe({
-        next: (resp) => {
-          const index = this.listaHuespedes.findIndex(h => h.id === resp.id);
-          if (index !== -1) this.listaHuespedes[index] = resp;
+      this.huespedesService.putHuesped(huespedData, this.selectedHuesped.id)
+        .subscribe({
+          next: (resp) => {
+            const index = this.listaHuespedes.findIndex(h => h.id === resp.id);
+            if (index !== -1) this.listaHuespedes[index] = resp;
 
-          this.modalInstance.hide();
-          Swal.fire('Actualizado', 'Huésped actualizado correctamente', 'success');
-        },
-        error: () => {
-          Swal.fire('Error', 'No se pudo actualizar el huésped', 'error');
-        }
-      });
+            this.modalInstance.hide();
+            Swal.fire('Actualizado', 'Huésped actualizado correctamente', 'success');
+          },
+          error: () => {
+            Swal.fire('Error', 'No se pudo actualizar el huésped', 'error');
+          }
+        });
 
-  } else {
+    } else {
 
-    this.huespedesService.postHuespedesComponent(huespedData)
-      .subscribe({
-        next: (resp) => {
-          this.listaHuespedes.push(resp);
-          this.modalInstance.hide();
-          Swal.fire('Registrado', 'Huésped registrado correctamente', 'success');
-        },
-        error: (err) => {
-          console.error(err);
-          Swal.fire('Error', err.error?.mensaje || 'Error al registrar huésped', 'error');
-        }
-      });
+      this.huespedesService.postHuespedesComponent(huespedData)
+        .subscribe({
+          next: (resp) => {
+            this.listaHuespedes.push(resp);
+            this.modalInstance.hide();
+            Swal.fire('Registrado', 'Huésped registrado correctamente', 'success');
+          },
+          error: (err) => {
+            console.error(err);
+            Swal.fire('Error', err.error?.mensaje || 'Error al registrar huésped', 'error');
+          }
+        });
+    }
   }
-}
 
   deleteHuesped(idHuesped: number): void {
     Swal.fire({
