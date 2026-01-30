@@ -1,0 +1,127 @@
+<div class="container-fluid mt-4">
+    <h2>Reservas</h2>
+    <div class="d-flex justify-content-between mb-3">
+        <button (click)="openModal()" class="btn btn-success">
+            <i class="fa fa-plus"></i> Registrar Reserva
+        </button>
+    </div>
+
+    <table class="table table-striped table-hover table-dark">
+        <thead class="table-dark">
+            <tr style="text-align: center;">
+                <th scope="col">#</th>
+                <th scope="col">Huésped</th>
+                <th scope="col">Habitación</th>
+                <th scope="col">Entrada</th>
+                <th scope="col">Salida</th>
+                <th scope="col">Noches</th>
+                <th scope="col">Total</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="text-align: center;" *ngFor="let reserva of listaReservas; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ reserva.huesped?.nombre }} {{ reserva.huesped?.apellidoPaterno }}</td>
+                <td>{{ reserva.habitacion?.numero }} ({{ reserva.habitacion?.tipo }})</td>
+                <td>{{ reserva.fechaEntrada }}</td>
+                <td>{{ reserva.fechaSalida }}</td>
+                <td>{{ reserva.cantNoches }}</td>
+                <td>${{ reserva.montoTotal | number:'1.2-2' }}</td>
+                <td>
+                    <span class="badge" [ngClass]="{
+                            'bg-success': reserva.estado === 'CONFIRMADA', 
+                            'bg-primary': reserva.estado === 'EN_CURSO',
+                            'bg-secondary': reserva.estado === 'FINALIZADA',
+                            'bg-danger': reserva.estado === 'CANCELADA'
+                        }">
+                        {{ ESTADO_LABELS[reserva.estado] }}
+                    </span>
+                </td>
+                <td>
+                    <!-- Check-in: All users, only if CONFIRMADA -->
+                    <button *ngIf="reserva.estado === 'CONFIRMADA'" class="btn btn-primary btn-sm me-1"
+                        (click)="checkIn(reserva.id)">
+                        Check-In
+                    </button>
+
+                    <!-- Check-out: All users, only if EN_CURSO -->
+                    <button *ngIf="reserva.estado === 'EN_CURSO'" class="btn btn-warning btn-sm me-1"
+                        (click)="checkOut(reserva.id)">
+                        Check-Out
+                    </button>
+
+                    <!-- Cancel: Admin only, only if CONFIRMADA -->
+                    <button *ngIf="isAdmin && reserva.estado === 'CONFIRMADA'" class="btn btn-danger btn-sm me-1"
+                        (click)="cancelar(reserva.id)">
+                        Cancelar
+                    </button>
+
+                    <!-- Delete: Admin only. Disabled if EN_CURSO per instructions -->
+                    <button *ngIf="isAdmin && reserva.estado !== 'EN_CURSO'" class="btn btn-danger btn-sm"
+                        (click)="eliminar(reserva.id)">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="listaReservas.length === 0" class="text-center py-5 text-muted">
+        No hay reservas registradas.
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" #reservaModalRef tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">{{ modalText }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="reservaForm" (ngSubmit)="onSubmit()">
+
+                        <div class="mb-3">
+                            <label for="idHuesped" class="form-label">Huésped</label>
+                            <select id="idHuesped" formControlName="idHuesped" class="form-select">
+                                <option value="" disabled selected>Seleccione un Huésped</option>
+                                <option *ngFor="let h of listaHuespedes" [value]="h.id">
+                                    {{ h.nombre }} {{ h.apellidoPaterno }} ({{ h.documento }})
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="idHabitacion" class="form-label">Habitación</label>
+                            <select id="idHabitacion" formControlName="idHabitacion" class="form-select">
+                                <option value="" disabled selected>Seleccione una Habitación</option>
+                                <option *ngFor="let h of listaHabitaciones" [value]="h.id">
+                                    {{ h.numero }} - {{ h.tipo }} (${{ h.precio }})
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fechaEntrada" class="form-label">Fecha Entrada</label>
+                            <input id="fechaEntrada" type="date" class="form-control" formControlName="fechaEntrada" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fechaSalida" class="form-label">Fecha Salida</label>
+                            <input id="fechaSalida" type="date" class="form-control" formControlName="fechaSalida" />
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success px-4" [disabled]="reservaForm.invalid">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

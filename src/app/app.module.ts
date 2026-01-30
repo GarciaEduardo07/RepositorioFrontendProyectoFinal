@@ -14,6 +14,7 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { AuthInterceptor } from './shared/auth.interceptor';
 import { ErrorInterceptor } from './shared/error.intercetpr';
 import { HabitacionesComponent } from './components/habitaciones/habitaciones.component';
+import { ReservasComponent } from './components/reservas/reservas.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { HabitacionesComponent } from './components/habitaciones/habitaciones.co
     FooterComponent,
     Login,
     UsuariosComponent,
-    HabitacionesComponent
+    HabitacionesComponent,
+    ReservasComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +38,7 @@ import { HabitacionesComponent } from './components/habitaciones/habitaciones.co
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    
+
   ],
   bootstrap: [AppComponent]
 })
